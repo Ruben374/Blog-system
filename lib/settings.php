@@ -1,7 +1,7 @@
 <?php
 
 #blog dice
-const BLOG_TITLE = "My blog";
+const BLOG_TITLE = "blog";
 const URL = "http://localhost/My-blog/";
 #database dice
 const DB_HOST = "localhost";
