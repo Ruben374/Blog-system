@@ -7,4 +7,4 @@ const URL = "http://localhost/My-blog/";
 const DB_HOST = "localhost";
 const DB_USER = "root";
 const DB_PASSWORD = "";
-const DB_DATABASE = "banco de dados";
+const DB_DATABASE = "blog";

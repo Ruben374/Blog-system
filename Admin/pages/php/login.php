@@ -20,13 +20,13 @@
         <form method="POST">
           <h1>Login</h1>
           <p>
-            <label for="nome_login">Seu nome</label>
-            <input id="nome_login" name="nome_login" type="text" placeholder="ex. contato@htmlecsspro.com" />
+            <label for="email_login">Seu email</label>
+            <input id="email_login" name="email_login" type="text" placeholder="ex. contato@htmlecsspro.com" />
           </p>
 
           <p>
-            <label for="email_login">Seu e-mail</label>
-            <input id="email_login" name="email_login"  type="password" placeholder="ex. senha" />
+            <label for="senha_login">Sua senha</label>
+            <input id="senha_login" name="senha_login"  type="password" placeholder="ex. senha" />
           </p>
 
           <p>
@@ -42,7 +42,7 @@
             Ainda não tem conta?
             <a href="#paracadastro">Cadastre-se</a>
           </p>
-          <input type="hidden" name="log" value="in">
+       <input type="hidden" name="x" value="y">
         </form>
         <?php
        login();
