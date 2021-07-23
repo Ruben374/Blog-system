@@ -20,7 +20,7 @@
 	function paginacaoadm(){
 		$url = (isset($_GET['pagina'])) ? $_GET['pagina'] : 'dashboard';
 		$explode = explode('/', $url);
-		$dir = 'pags/php/';
+		$dir = 'pages/php/';
 		$ext = '.php';
 
 		if(file_exists($dir.$explode[0].$ext) && isset($_SESSION['admlogin'])){
