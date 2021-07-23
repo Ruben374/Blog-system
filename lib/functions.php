@@ -9,10 +9,10 @@ function pdo()
     $db_database = DB_DATABASE;
 
     try {
-        $pdo = new PDO("mysql:host={$db_host};dbname={$db_database}", $db_user, $db_password);
+       return $pdo = new PDO("mysql:host={$db_host};dbname={$db_database}", $db_user, $db_password);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {
-        exit("Erro ao se conectar ao banco de dados:" . $e->getMessage());
+        exit("error to conect to the database:" . $e->getMessage());
     }
 }
 
@@ -24,105 +24,46 @@ function pdo()
 function paginacaoadm()
 {
 
-    if (isset($_GET['pagina'])) {
-        $url = $_GET['pagina'];
-    } else {
-        $url = 'dashboard';
-    }
+    $url= (isset($_GET["pagina"])) ? $_GET["pagina"] :'dashboard';
     $explode = explode('/', $url);
     $dir = 'pages/php/';
     $ext = '.php';
 
 
-    if (file_exists($dir . $explode[0] . $ext) && isset($_SESSION['admlogin'])) {
-
-        include($dir . $explode[0] . $ext);
+    if (file_exists($dir.$explode[0].$ext) && isset($_SESSION['admlogin'])) {
+        include($dir.$explode[0].$ext);
     } else {
-        include($dir . "login" . $ext);
+        include($dir."login" .$ext);
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+function Alerta($mensagem){
+   echo"<div class='alert'>{$mensagem}</div>";
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 function login()
 {
     if (isset($_POST["x"]) && $_POST["x"]=="y") {
         $pdo=pdo();
         $query=$pdo->prepare("SELECT *FROM usuarios WHERE usuario=:usuario");
-        $query->execute([":usuarios" => $_POST["email_login"]]);
+        $query->execute([":usuario" => $_POST["email_login"]]);
         $total=$query->rowcount();
         if($total>0){
-            $dados=$pdo->fetch(PDO::FETCH_ASSOC);
-            if(password_verify($_POST["senha_login"],$dados["senha"] )){
-                echo"<br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                
-                logado";
+            $dados=$query->fetch(PDO::FETCH_ASSOC);
+
+
+            if(password_verify($_POST["senha_login"],$dados["Senha"] )){
+              $_SESSION["admlogin"]=$dados["Nome"];
+              header("location: dashboard");
             }
             else{
-                echo"<br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                <br><br><br><br>
-                
-                
-                dados incorretos";
+               alerta("usuario ou senha invalidos");
             }
           
         }
         else{
-            echo"<br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            <br><br><br><br>
-            
-            usuario inexistente";
+            echo"usuario inexistente";
             
         }
     } 

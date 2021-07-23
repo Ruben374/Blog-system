@@ -37,20 +37,38 @@
           <p>
             <input type="submit" value="Logar"name="logar" />
           </p>
-
+          <?php
+            login();
+          ?>
           <p class="link">
             Ainda não tem conta?
             <a href="#paracadastro">Cadastre-se</a>
           </p>
        <input type="hidden" name="x" value="y">
         </form>
-        <?php
-       login();
-        ?>
+
       </div>
-
+     
     </div>
- </div>
+    
 
+ </div>
+ <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+ <script>
+$(function(){
+  $(".alert").css({color:"red"}).css({
+    backgroundColor:"rgba(251, 7, 31, 0.1)",
+    textAlign:"center",
+    marginBottom:"20px",
+    padding:"10px"
+  
+  });
+
+});
+
+
+
+
+ </script>
 </body>
 
