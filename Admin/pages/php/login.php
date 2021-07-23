@@ -1,7 +1,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title><?php echo BLOG_TITLE ?> </title>
+  <title><?php echo BLOG_TITLE ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base href="<?php echo URL ?>">
   <link rel="stylesheet" type="text/css" href="css/style.css"/>
@@ -21,7 +21,7 @@
           <h1>Login</h1>
           <p>
             <label for="email_login">Seu email</label>
-            <input id="email_login" name="email_login" type="text" placeholder="ex. contato@htmlecsspro.com" />
+            <input id="email_login" name="email_login" type="text" placeholder="ex. contato@htmlecsspro.com" required="required" />
           </p>
 
           <p>
