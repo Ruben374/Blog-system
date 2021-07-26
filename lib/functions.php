@@ -86,4 +86,110 @@ function getadmData($var)
 		return $dados[$var];
 	}
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////Função para pegar todas as categorias /////////////////////////////////
+
+function getCategorias(){
+	$pdo=pdo();
+	$smtp=$pdo->prepare("SELECT *FROM categorias");
+	$smtp->execute();
+	$total=$smtp->rowcount();
+	if($total>0){
+while($dados=$smtp->fetch(PDO::FETCH_ASSOC)){
+	echo "<option value='{$dados['ID']}'>{$dados['NOME']}</option>";
+} 
+
+
+	}
+	else{
+	
+		alerta("danger","é necessario ter categorias");	
+		exit();
+	}
+
+
+}
+/////////////////////////////////////////Tirar acentos de strings///////////////////////////////////////////
+function tirarAcentos($string){
+	return preg_replace(array("/(á|à|ã|â|ä)/","/(Á|À|Ã|Â|Ä)/","/(é|è|ê|ë)/","/(É|È|Ê|Ë)/","/(í|ì|î|ï)/","/(Í|Ì|Î|Ï)/","/(ó|ò|õ|ô|ö)/","/(Ó|Ò|Õ|Ô|Ö)/","/(ú|ù|û|ü)/","/(Ú|Ù|Û|Ü)/","/(ñ)/","/(Ñ)/"),explode(" ","a A e E i I o O u U n N"),$string);
+}
+//////////////////////////////////////////Função para enviar posts/////////////////////////////////////////
+
+function getData(){
+	date_default_timezone_set('Africa/Luanda');
+	return date('d-m-Y H:i:s');
+}
+//////////////
+function setPost(){
+
+	if(isset($_POST["env"]) && $_POST["env"]=="post"){
+		$subtitulo=tiraracentos($_POST["titulo"]);
+
+        $data=getData();
+		$pdo=pdo();
+		
+		$pdo=pdo();
+	
+	
+		$stmt = $pdo->prepare("INSERT INTO posts (
+			titulo,
+			subtitulo,
+			postagem,
+		
+			data,
+			categoria,
+			id_postador) VALUES(
+			:titulo,
+			:subtitulo,
+			:postagem,
+		
+			:data,
+			:categoria,
+			:id_postador
+			)
+			");
+		$stmt->execute([
+			':titulo' => $_POST['titulo'],
+			':subtitulo' => $subtitulo,
+			':postagem' => $_POST['post'],
+		
+			':data' => $data,
+			':categoria' => $_POST['categoria'],
+			':id_postador' => $_SESSION['admlogin']
+		]);
+
+
+	/*
+		$smtp=$pdo->prepare("INSERT INTO postagens (
+		titulo,
+		subtitulo,	
+		postagem,	
+		imagem,
+		dataDopost,	
+		categoria,	
+		Postador,
+		visualizacoes	
+	)
+		VALUES(
+		:titulo,
+		:subtitulo,	
+		:postagem,	
+		:imagem,
+		:dataDopost,	
+		:categoria,	
+		:Postador,
+		:vizualizacoes	
+		
+		)");
+	
+	$smtp->execute([
+		':titulo' => $_POST['titulo'],
+		':subtitulo' => $subtitulo,
+		':postagem' => $_POST['post'],
+		':imagem'=>"img",
+		':dataDopost' => $data,	
+		':categoria' => $_POST['categoria'],
+		':Postador' => $_SESSION['admlogin'],
+		':vizualizacoes' => "viso"
+	]);*/
+	}
+}
