@@ -1,72 +1,89 @@
 <?php
-	//******************************Conexão com o banco de dados******************************//
-	function pdo(){
-		$db_host = DB_HOST;
-		$db_usuario = DB_USER;
-		$db_senha = DB_PASSWORD;
-		$db_banco = DB_DATABASE;
-		try{
-			return $pdo = new PDO("mysql:host={$db_host};dbname={$db_banco}", $db_usuario, $db_senha, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		}catch(PDOException $e){
-			exit("Erro ao conectar-se ao banco: ".$e->getMessage());
-		}
+//******************************Conexão com o banco de dados******************************//
+function pdo()
+{
+	$db_host = DB_HOST;
+	$db_usuario = DB_USER;
+	$db_senha = DB_PASSWORD;
+	$db_banco = DB_DATABASE;
+	try {
+		return $pdo = new PDO("mysql:host={$db_host};dbname={$db_banco}", $db_usuario, $db_senha, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	} catch (PDOException $e) {
+		exit("Erro ao conectar-se ao banco: " . $e->getMessage());
 	}
-		//******************************Inclusão de paginas do administrador******************************//
-	function paginacaoadm(){
-		$url = (isset($_GET['pagina'])) ? $_GET['pagina'] : 'dashboard';
-		$explode = explode('/', $url);
-		$dir = 'pages/php/';
-		$ext = '.php';
+}
+//******************************Inclusão de paginas do administrador******************************//
+function paginacaoadm()
+{
+	$url = (isset($_GET['pagina'])) ? $_GET['pagina'] : 'dashboard';
+	$explode = explode('/', $url);
+	$dir = 'pages/php/';
+	$ext = '.php';
 
-		if(file_exists($dir.$explode[0].$ext) && isset($_SESSION['admlogin'])){
-			include($dir.$explode[0].$ext);
-		}else{
-			include($dir."login".$ext);
-		}
+	if (file_exists($dir . $explode[0] . $ext) && isset($_SESSION['admlogin'])) {
+		include($dir . $explode[0] . $ext);
+	} else {
+		include($dir . "login" . $ext);
 	}
-		//******************************Funcão de alerta no formulario de login****************************//
+}
+//******************************Funcão de alerta no formulario de login****************************//
 
-	function alerta($tipo, $mensagem){
-		echo "<div class='alert alert-{$tipo}'>{$mensagem}</div>";
-	}
-	
-		//******************************Funcão de redirecionamento****************************//
+function alerta($tipo, $mensagem)
+{
+	echo "<div class='alert alert-{$tipo}'>{$mensagem}</div>";
+}
 
-	function redireciona($tempo, $dir){
-		echo "<meta http-equiv='refresh' content='{$tempo}; url={$dir}'>";
-	}
-		//******************************Funcão para validadção de login****************************//
+//******************************Funcão de redirecionamento****************************//
 
-	function login(){
-		if(isset($_POST['log']) && $_POST['log'] == "in"){
-			$pdo = pdo();
+function redireciona($tempo, $dir)
+{
+	echo "<meta http-equiv='refresh' content='{$tempo}; url={$dir}'>";
+}
+//******************************Funcão para validadção de login****************************//
 
-			$stmt = $pdo->prepare("SELECT * FROM usuarios WHERE Usuario = :usuario");
-			$stmt->execute([':usuario' => $_POST['usuario']]);
-			$total = $stmt->rowCount();
+function login()
+{
+	if (isset($_POST['log']) && $_POST['log'] == "in") {
+		$pdo = pdo();
 
-			if($total > 0){
-				$dados = $stmt->fetch(PDO::FETCH_ASSOC);
+		$stmt = $pdo->prepare("SELECT * FROM usuarios WHERE Usuario = :usuario");
+		$stmt->execute([':usuario' => $_POST['usuario']]);
+		$total = $stmt->rowCount();
 
-				if(password_verify($_POST['senha'], $dados['Senha'])){
-					$_SESSION['admlogin'] = $dados['Nome'];
-					header('Location: dashboard');
-				}else{
-					alerta("danger", "Usuário ou senha inválidos");
-				}
+		if ($total > 0) {
+			$dados = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			if (password_verify($_POST['senha'], $dados['Senha'])) {
+				$_SESSION['admlogin'] = $dados['Usuario'];
+				header('Location: dashboard');
+			} else {
+				alerta("danger", "Usuário ou senha inválidos");
 			}
-			else{
-				alerta("dark","Usuario inexistente");
-			}
+		} else {
+			alerta("dark", "Usuario inexistente");
 		}
 	}
-		//***************************Funcão para verificar se usuario esta logado*************************//
+}
+//***************************Funcão para verificar se usuario esta logado*************************//
 
-	function verificaLogin(){
-		if(isset($_SESSION['admlogin'])){
-			header('Location: dashboard');
-			exit();
-		}
+function verificaLogin()
+{
+	if (isset($_SESSION['admlogin'])) {
+		header('Location: dashboard');
+		exit();
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+}
+/////////////////////////Função para retornar os dados do adm//////////////////////////////
+
+function getadmData($var)
+{
+	if (isset($_SESSION["admlogin"])) {
+		$pdo = pdo();
+		$smtp = $pdo->prepare("SELECT * FROM usuarios WHERE Usuario = :usuario");
+		$smtp->execute([":usuario" => $_SESSION["admlogin"]]);
+		$dados = $smtp->fetch(PDO::FETCH_ASSOC);
+		return $dados[$var];
+	}
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////

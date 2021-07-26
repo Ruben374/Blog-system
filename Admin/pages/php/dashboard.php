@@ -1,5 +1,7 @@
+
+
 <div class="panel-content">
-<h4>Bem vindo <b><?php echo $_SESSION["admlogin"]?></b></h4>
+<h4>Bem vindo <b><?php  echo getadmData("Nome"); ?></b></h4>
 <hr>
 Aqui algumas estatísticas do blog
 <hr>
