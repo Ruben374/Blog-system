@@ -28,7 +28,7 @@
             <li class="blue"><a href="admin/" class="category"> Publicações</a>
               <ul>
                 <li><a href="admin/publicar"><i class="fas fa-plus"></i> Cadastrar</a></li>
-                <li><a href="admin/gerenciar-posts"><i class="fas fa-bars"></i> Gerenciar</a></li>
+                <li><a href="admin/gerenciar-post"><i class="fas fa-bars"></i> Gerenciar</a></li>
               </ul>
             </li>
             

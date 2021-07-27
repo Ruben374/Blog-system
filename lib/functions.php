@@ -88,108 +88,121 @@ function getadmData($var)
 }
 /////////////////////////////////////Função para pegar todas as categorias /////////////////////////////////
 
-function getCategorias(){
-	$pdo=pdo();
-	$smtp=$pdo->prepare("SELECT *FROM categorias");
+function getCategorias()
+{
+	$pdo = pdo();
+	$smtp = $pdo->prepare("SELECT *FROM categorias");
 	$smtp->execute();
-	$total=$smtp->rowcount();
-	if($total>0){
-while($dados=$smtp->fetch(PDO::FETCH_ASSOC)){
-	echo "<option value='{$dados['ID']}'>{$dados['NOME']}</option>";
-} 
+	$total = $smtp->rowcount();
+	if ($total > 0) {
+		while ($dados = $smtp->fetch(PDO::FETCH_ASSOC)) {
+			echo "<option value='{$dados['ID']}'>{$dados['NOME']}</option>";
+		}
+	} else {
 
-
-	}
-	else{
-	
-		alerta("danger","é necessario ter categorias");	
+		alerta("danger", "é necessario ter categorias");
 		exit();
 	}
-
-
 }
 /////////////////////////////////////////Tirar acentos de strings///////////////////////////////////////////
-function tirarAcentos($string){
-	return preg_replace(array("/(á|à|ã|â|ä)/","/(Á|À|Ã|Â|Ä)/","/(é|è|ê|ë)/","/(É|È|Ê|Ë)/","/(í|ì|î|ï)/","/(Í|Ì|Î|Ï)/","/(ó|ò|õ|ô|ö)/","/(Ó|Ò|Õ|Ô|Ö)/","/(ú|ù|û|ü)/","/(Ú|Ù|Û|Ü)/","/(ñ)/","/(Ñ)/"),explode(" ","a A e E i I o O u U n N"),$string);
+function tirarAcentos($string)
+{
+	return preg_replace(array("/(á|à|ã|â|ä)/", "/(Á|À|Ã|Â|Ä)/", "/(é|è|ê|ë)/", "/(É|È|Ê|Ë)/", "/(í|ì|î|ï)/", "/(Í|Ì|Î|Ï)/", "/(ó|ò|õ|ô|ö)/", "/(Ó|Ò|Õ|Ô|Ö)/", "/(ú|ù|û|ü)/", "/(Ú|Ù|Û|Ü)/", "/(ñ)/", "/(Ñ)/"), explode(" ", "a A e E i I o O u U n N"), $string);
 }
 //////////////////////////////////////////Função para enviar posts/////////////////////////////////////////
 
-function getData(){
+function getData()
+{
 	date_default_timezone_set('Africa/Luanda');
 	return date('d-m-Y H:i:s');
 }
 //////////////
-function setPost(){
+function setPost()
+{
+	if (isset($_POST['env']) && $_POST['env'] == "post") {
+		$pdo = pdo();
+		$subtitulo = tirarAcentos($_POST['titulo']);
+		$data = getData();
+		//upar imagem no site
+		$uploaddir = '../images/uploads/';
+		$uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
+		//guardar url da imagem no banco de dados
+		$uploaddir2 = 'images/uploads/';
+		$uploadfile2 = $uploaddir2 . basename($_FILES['userfile']['name']);
 
-	if(isset($_POST["env"]) && $_POST["env"]=="post"){
-		$subtitulo=tiraracentos($_POST["titulo"]);
-
-        $data=getData();
-		$pdo=pdo();
-		
-		$pdo=pdo();
-	
-	
-		$stmt = $pdo->prepare("INSERT INTO posts (
+		if ($_FILES['userfile']['size'] > 0) {
+			$stmt = $pdo->prepare("INSERT INTO posts (
 			titulo,
 			subtitulo,
 			postagem,
-		
+			imagem,
 			data,
 			categoria,
 			id_postador) VALUES(
 			:titulo,
 			:subtitulo,
 			:postagem,
-		
+			:imagem,
 			:data,
 			:categoria,
 			:id_postador
 			)
 			");
-		$stmt->execute([
-			':titulo' => $_POST['titulo'],
-			':subtitulo' => $subtitulo,
-			':postagem' => $_POST['post'],
-		
-			':data' => $data,
-			':categoria' => $_POST['categoria'],
-			':id_postador' => $_SESSION['admlogin']
-		]);
+			$stmt->execute([
+				':titulo' => $_POST['titulo'],
+				':subtitulo' => $subtitulo,
+				':postagem' => $_POST['post'],
+				':imagem' => $uploadfile2,
+				':data' => $data,
+				':categoria' => $_POST['categoria'],
+				':id_postador' => getadmData("ID")
+			]);
 
+			$total = $stmt->rowCount();
 
-	/*
-		$smtp=$pdo->prepare("INSERT INTO postagens (
-		titulo,
-		subtitulo,	
-		postagem,	
-		imagem,
-		dataDopost,	
-		categoria,	
-		Postador,
-		visualizacoes	
-	)
-		VALUES(
-		:titulo,
-		:subtitulo,	
-		:postagem,	
-		:imagem,
-		:dataDopost,	
-		:categoria,	
-		:Postador,
-		:vizualizacoes	
-		
-		)");
-	
-	$smtp->execute([
-		':titulo' => $_POST['titulo'],
-		':subtitulo' => $subtitulo,
-		':postagem' => $_POST['post'],
-		':imagem'=>"img",
-		':dataDopost' => $data,	
-		':categoria' => $_POST['categoria'],
-		':Postador' => $_SESSION['admlogin'],
-		':vizualizacoes' => "viso"
-	]);*/
+			if ($total > 0) {
+				move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile);
+				alerta("success", "Publicação cadastrada com sucesso!");
+			} else {
+				alerta("danger", "ERRO AO ENVIAR A PUBLICAÇÃO");
+			}
+		} else {
+			alerta("danger", "INSIRA UMA IMAGEM!");
+		}
+	}
+}
+//////////////FUNÇÃO PARA RETORNAR O NOME DE UMA CATEGORIA DEPOIS DE RECEBER O CODIGO DELA///////////////
+function getcategoriaNome($id)
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT NOME FROM categoriaS WHERE id=:id");
+	$stmt->execute([':id' => $id]);
+	$dados = $stmt->fetch(PDO::FETCH_ASSOC);
+	return $dados["NOME"];
+}
+
+///////////////FUNÇÃO PARA MOSTRAR TODAS AS POSTAGENS FEITA PARA O ADM LOGADO NO MOMENTO//////////////////
+function getpostAdmin()
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
+	$stmt->execute();
+	$total = $stmt->rowCount();
+	if ($total > 0) {
+		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			echo "<tr>
+			<td>{$dados['id']}</td>
+			<td>{$dados['titulo']}</td>
+			<td><span class='badge badge-primary'>" . getcategoriaNome($dados['categoria']) . "</span></td>
+			<td>
+			  <button id='btnGroupDrop1' type='button' class='btn btn-secondary dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Gerenciar</button>
+			  <div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>
+				<a class='dropdown-item bg-dark text-light' href='{$dados['subtitulo']}' target='_blank'>Ver Publicação</a>
+				<a class='dropdown-item bg-info text-light' href='admin/editar-post/{$dados['id']}'>Editar Publicação</a>
+				<a class='dropdown-item bg-danger text-light' href='admin/deletar-post/{$dados['id']}'>Deletar Publicação</a>
+			  </div>
+			</td>
+		  </tr>";
+		}
 	}
 }
