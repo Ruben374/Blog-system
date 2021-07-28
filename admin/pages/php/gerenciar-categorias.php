@@ -21,7 +21,7 @@
             <h5>Categorias</h5>
             <hr>
             <ul class="ul-adm">
-
+            <?php getCategoriasMenu();?>
             </ul>
         </div>
     </div>

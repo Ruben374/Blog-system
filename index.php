@@ -5,7 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <base href="<?php echo url_site;?>">
+    <base href="<?php echo URL;?>">
 
     <!-- CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -19,7 +19,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/97bdcc5c17.js"></script>
 
-    <title><?php geraTitulo(titulo_site);?></title>
+    <title></title>
   </head>
   <body>
 
@@ -40,7 +40,7 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-8">
-          <?php paginacao();?>
+          
           </div>
 
         <div class="col-sm-4">
@@ -56,14 +56,14 @@
 
           <div class="menu-right">
             <div class="title">MAIS POPULARES</div>
-            <?php getPopularesPosts(); ?>
+            <?php ?>
           </div>
 
             <div class="menu-right">
               <div class="title">CATEGORIAS</div>
               <div class="content">
                 <ul>
-                  <?php getCategoriasSite();?>	
+                  <?php?>	
                 </ul>
               </div>
             </div>
@@ -71,6 +71,6 @@
       </div>
     </div>
 
-  <footer><?php echo titulo_site;?> &copy; Criado por <b>Tutoriais e Informática</b></footer>
+  <footer><?php echo BLOG_TITLE;?> &copy; Criado por <b>Tutoriais e Informática</b></footer>
   </body>
 </html>

@@ -326,3 +326,21 @@ function addCategoria()
 		}
 	}
 }
+/////////////////////////////////////////////////////////////
+function getCategoriasMenu()
+{
+	$pdo = pdo();
+	$smtp = $pdo->prepare("SELECT *FROM categorias");
+	$smtp->execute();
+	$total = $smtp->rowcount();
+	if ($total > 0) {
+		while ($dados = $smtp->fetch(PDO::FETCH_ASSOC)) {
+			echo "<li>{$dados['NOME']}</li>";
+		}
+	} else {
+
+		alerta("danger", "é necessario ter categorias");
+		exit();
+	}
+}
+/////////////////////////////////////////////////////
