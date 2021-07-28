@@ -175,7 +175,7 @@ function setPost()
 function getcategoriaNome($id)
 {
 	$pdo = pdo();
-	$stmt = $pdo->prepare("SELECT NOME FROM categoriaS WHERE id=:id");
+	$stmt = $pdo->prepare("SELECT NOME FROM categorias WHERE id=:id");
 	$stmt->execute([':id' => $id]);
 	$dados = $stmt->fetch(PDO::FETCH_ASSOC);
 	return $dados["NOME"];
@@ -204,5 +204,34 @@ function getpostAdmin()
 			</td>
 		  </tr>";
 		}
+	}
+}
+/////////////////////////////////////////////////////////////////////////////
+function getDadospost($id,$dado)
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT * FROM posts WHERE id=:id");
+	$stmt->execute([':id' => $id]);
+	$dados = $stmt->fetch(PDO::FETCH_ASSOC);
+	return $dados[$dado];
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+function getcategoriaActual($id){
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT NOME FROM categorias WHERE id=:id");
+	$stmt->execute([':id' => $id]);
+	$dados = $stmt->fetch(PDO::FETCH_ASSOC);
+	echo "<option value='{$dados['ID']}'>{$dados['NOME']}(Atual)</option>";
+}
+/////////////////////////////////////////////////////////////////////////////////
+function updatePost($id){
+
+	if(isset($_POST['env']) && $_POST['env'] == "alt"){
+
+		$pdo = pdo();
+		$subtitulo = tirarAcentos($_POST['titulo']);
+		
 	}
 }
