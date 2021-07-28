@@ -175,7 +175,7 @@ function setPost()
 function getcategoriaNome($id)
 {
 	$pdo = pdo();
-	$stmt = $pdo->prepare("SELECT NOME FROM categorias WHERE id=:id");
+	$stmt = $pdo->prepare("SELECT NOME FROM categorias WHERE ID=:id");
 	$stmt->execute([':id' => $id]);
 	$dados = $stmt->fetch(PDO::FETCH_ASSOC);
 	return $dados["NOME"];
@@ -207,7 +207,7 @@ function getpostAdmin()
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
-function getDadospost($id,$dado)
+function getDadospost($id, $dado)
 {
 	$pdo = pdo();
 	$stmt = $pdo->prepare("SELECT * FROM posts WHERE id=:id");
@@ -218,20 +218,111 @@ function getDadospost($id,$dado)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-function getcategoriaActual($id){
+function getcategoriaActual($id)
+{
 	$pdo = pdo();
-	$stmt = $pdo->prepare("SELECT NOME FROM categorias WHERE id=:id");
+	$stmt = $pdo->prepare("SELECT * FROM categorias WHERE ID=:id");
 	$stmt->execute([':id' => $id]);
 	$dados = $stmt->fetch(PDO::FETCH_ASSOC);
 	echo "<option value='{$dados['ID']}'>{$dados['NOME']}(Atual)</option>";
 }
 /////////////////////////////////////////////////////////////////////////////////
-function updatePost($id){
-
-	if(isset($_POST['env']) && $_POST['env'] == "alt"){
-
+function updatePost($id)
+{
+	if (isset($_POST['env']) && $_POST['env'] == "alt") {
 		$pdo = pdo();
 		$subtitulo = tirarAcentos($_POST['titulo']);
-		
+
+		if ($_FILES['userfile']['size'] > 0) {
+			$uploaddir = '../images/uploads/';
+			$uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
+
+			$uploaddir2 = 'images/uploads/';
+			$uploadfile2 = $uploaddir2 . basename($_FILES['userfile']['name']);
+
+			$stmt = $pdo->prepare("UPDATE posts SET 
+												titulo = :titulo,
+												subtitulo = :subtitulo,
+												postagem = :postagem,
+												categoria = :categoria, imagem = :imagem WHERE
+												id = :id");
+			$success = $stmt->execute([
+				':titulo' => $_POST['titulo'],
+				':subtitulo' => $subtitulo,
+				':postagem' => $_POST['post'],
+				':categoria' => $_POST['categoria'],
+				':imagem' => $uploadfile2,
+				':id' => $id
+			]);
+			move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile);
+		} else {
+			$stmt = $pdo->prepare("UPDATE posts SET 
+												titulo = :titulo,
+												subtitulo = :subtitulo,
+												postagem = :postagem,
+												categoria = :categoria WHERE
+												id = :id");
+			$success = $stmt->execute([
+				':titulo' => $_POST['titulo'],
+				':subtitulo' => $subtitulo,
+				':postagem' => $_POST['post'],
+				':categoria' => $_POST['categoria'],
+				':id' => $id
+			]);
+		}
+
+		$total = $stmt->rowCount();
+
+
+		if ($success) {
+			alerta("success", "Publicação alterada com sucesso!");
+			redireciona(2, "admin/editar-post/{$id}");
+		} else {
+			alerta("danger", "Erro ao alterar");
+		}
+	}
+}
+/////////////////////////////////
+function deletaFoto($imagem)
+{
+	$pdo = pdo();
+
+	$stmt = $pdo->prepare("SELECT imagem FROM posts WHERE imagem = :imagem");
+	$stmt->execute([':imagem' => $imagem]);
+	$total = $stmt->rowCount();
+
+	if ($total == 1) {
+		$dados = $stmt->fetch(PDO::FETCH_ASSOC);
+		unlink("../{$dados['imagem']}") or die("Erro ao deletar imagem");
+	}
+}
+////////////////////////////////////////////////////////////
+
+function delete($tabela, $coluna, $id, $backpage)
+{
+	$pdo = pdo();
+
+	$stmt = $pdo->prepare("DELETE FROM " . $tabela . " WHERE " . $coluna . " = :id");
+	$stmt->execute([':id' => $id]);
+	$total = $stmt->rowCount();
+
+	if ($total <= 0) {
+		alerta("danger", "Erro ao deletar");
+	} else {
+		redireciona(0, $backpage);
+	}
+}
+/////////////////////////////////////////////////////
+function addCategoria()
+{
+	if (isset($_POST["env"]) && $_POST["env"] == "cat") {
+
+		$pdo=pdo();
+		$stmt=$pdo->prepare("INSERT INTO categorias (NOME) VALUES(:nome)");
+		$stmt->execute([':nome'=>$_POST["categoria"]]);
+		$total=$stmt->rowCount();
+		if($total>0){
+			echo "categoria cadastrada com sucesso";
+		}
 	}
 }
