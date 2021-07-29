@@ -317,12 +317,12 @@ function addCategoria()
 {
 	if (isset($_POST["env"]) && $_POST["env"] == "cat") {
 
-		$pdo=pdo();
-		$stmt=$pdo->prepare("INSERT INTO categorias (NOME) VALUES(:nome)");
-		$stmt->execute([':nome'=>$_POST["categoria"]]);
-		$total=$stmt->rowCount();
-		if($total>0){
-			echo "categoria cadastrada com sucesso";
+		$pdo = pdo();
+		$stmt = $pdo->prepare("INSERT INTO categorias (NOME) VALUES(:nome)");
+		$stmt->execute([':nome' => $_POST["categoria"]]);
+		$total = $stmt->rowCount();
+		if ($total > 0) {
+			alerta("success", "categoria cadastrada com sucesso");
 		}
 	}
 }
@@ -335,12 +335,68 @@ function getCategoriasMenu()
 	$total = $smtp->rowcount();
 	if ($total > 0) {
 		while ($dados = $smtp->fetch(PDO::FETCH_ASSOC)) {
-			echo "<li>{$dados['NOME']}</li>";
+			echo "<li>{$dados['NOME']}<a href='admin/deletar-categoria/{$dados['ID']}' class='btn btn-danger btn-sm float-right'>Deletar</a></li>";
 		}
 	} else {
 
-		alerta("danger", "é necessario ter categorias");
+		alerta("danger", "Nenhuma Categorias registrada");
 		exit();
 	}
 }
 /////////////////////////////////////////////////////
+
+function deletecategoria($categoria)
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT * FROM posts WHERE categoria=:categoria");
+	$stmt->execute([':categoria' => $categoria]);
+
+	$total = $stmt->rowCount();
+	if ($total > 0) {
+		alerta("danger", "Não é possivel deletar esta categoria porque existem posts vinculados a ela!");
+		redireciona(2, "admin/gerenciar-categorias");
+	} else {
+		delete("categorias", "ID", $categoria, "admin/gerenciar-categorias");
+	}
+}
+
+///////////////////////////////////////////////////
+function blockacesso()
+{
+	if (getadmData("SuperAdmin") != "1")
+		redireciona(0, "admin/dashboard");
+}
+////////////////////////////////////////////////////
+
+function addAdm()
+{
+
+	if (isset($_POST["env"]) && $_POST["env"] == "adm") {
+
+		$senha = password_hash($_POST["senha"], PASSWORD_BCRYPT);
+		$statuscheckbox = 0;
+
+		if (isset($_POST["superadmin"]) && $_POST["superadmin"] == 1)
+			$statuscheckbox = 1;
+		else
+			$statuscheckbox = 0;
+
+
+
+
+		$pdo = pdo();
+		$stmt = $pdo->prepare("INSERT INTO usuarios (Nome,Usuario,Senha,SuperAdmin)
+	VALUES(:Nome,:Usuario,:Senha,:SuperAdmin)");
+		$stmt->execute([
+			'Nome' => $_POST["nome"],
+			'Usuario' => $_POST["email"],
+			'Senha' => $senha,
+			'SuperAdmin' => $statuscheckbox
+		]);
+		$total = $stmt->rowCount();
+		if ($total > 0)
+			alerta("success", "adm cadastrado");
+		else
+			alerta("danger", "erro ao cadastrar");
+	}
+}
