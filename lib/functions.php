@@ -370,7 +370,6 @@ function blockacesso()
 
 function addAdm()
 {
-
 	if (isset($_POST["env"]) && $_POST["env"] == "adm") {
 
 		$senha = password_hash($_POST["senha"], PASSWORD_BCRYPT);
@@ -400,3 +399,77 @@ function addAdm()
 			alerta("danger", "erro ao cadastrar");
 	}
 }
+//////////////////////////////////////////////////////////////////
+function listaAdministradores(){
+	$pdo = pdo();
+
+	$stmt = $pdo->prepare("SELECT * FROM usuarios ORDER BY Nome ASC");
+	$stmt->execute();
+
+	$total = $stmt->rowCount();
+
+	if($total > 0){
+		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			echo "<li>{$dados['Nome']} <a href='admin/deletar-administrador/{$dados['ID']}' class='btn btn-danger btn-sm float-right'>Deletar</a></li>";
+		}
+	}
+}
+////////////////////////////////////////////////////////////////////
+function updateAdmdata(){
+	if (isset($_POST["env"]) && $_POST["env"] == "alt") {
+
+ if($_POST["senha"]==getadmData("Senha")){
+
+
+		
+	$pdo = pdo();
+	$stmt = $pdo->prepare("UPDATE usuarios SET Nome=:Nome,Usuario=:Usuario WHERE Usuario=:Usuario");
+	$success=$stmt->execute([
+		'Nome' => $_POST["nome"],
+		'Usuario' => $_SESSION["admlogin"]
+	]);
+
+	if ($success)
+		alerta("success", "Dados guardados com sucesso");
+	else
+		alerta("danger", "erro ao guardar");
+ }
+ else{
+	
+	$senha = password_hash($_POST["senha"], PASSWORD_BCRYPT);
+		
+	$pdo = pdo();
+	$stmt = $pdo->prepare("UPDATE usuarios SET Nome=:Nome,Usuario=:Usuario,Senha=:Senha WHERE Usuario=:Usuario");
+	$success=$stmt->execute([
+		'Nome' => $_POST["nome"],
+		'Usuario' => $_SESSION["admlogin"],
+		'Senha' => $senha	
+	]);
+	
+	if ($success){
+		$_SESSION["x"]="Dados guardados com sucesso";
+	  redireciona(0,"admin/me");
+	 
+	}
+	else
+		alerta("danger", "erro ao guardar");
+ }
+
+	}
+}
+////////////////////////////////////////////////////////
+function getcountAdmin(){
+$pdo=pdo();
+$stmt=$pdo->prepare("SELECT COUNT(*) AS quant FROM usuarios");
+$stmt->execute();
+$quant=$stmt->fetch();
+return $quant["quant"];
+}
+//////////////////////////////////////////////////////////////////////
+function getcountPosts(){
+	$pdo=pdo();
+	$stmt=$pdo->prepare("SELECT COUNT(*) AS quant FROM posts");
+	$stmt->execute();
+	$quant=$stmt->fetch();
+	return $quant["quant"];
+	}

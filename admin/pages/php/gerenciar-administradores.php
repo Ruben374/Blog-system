@@ -10,13 +10,13 @@
                 <hr>
                 <form method="POST">
                   <label>Nome</label>
-                  <input type="text" name="nome" class="form-control"><br>
+                  <input type="text" name="nome" class="form-control" required="required"><br>
 
                   <label>Usuário</label>
-                  <input type="email" name="email" class="form-control"><br>
+                  <input type="email" name="email" class="form-control" required="required"><br>
 
                   <label>Senha</label>
-                  <input type="password" name="senha" class="form-control"><br>
+                  <input type="password" name="senha" class="form-control" required="required"><br>
 
                   <label>É super admin?</label>
                   <input type="checkbox" name="superadmin" value="1"><br>
