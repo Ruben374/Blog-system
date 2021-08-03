@@ -473,3 +473,15 @@ function getcountPosts(){
 	$quant=$stmt->fetch();
 	return $quant["quant"];
 	}
+	///////////////////////////////////////////////////////////////////////
+	function getcomentarioAdm(){
+		$pdo=pdo();
+		$stmt=$pdo->prepare("SELECT *FROM comentarios");
+		$stmt->execute();
+		$total=$stmt->rowCount();
+		if($total>0){
+			while($dados=$stmt->fetch(PDO::FETCH_ASSOC)){
+				
+			}
+		}
+	}
