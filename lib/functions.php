@@ -343,6 +343,34 @@ function getCategoriasMenu()
 		exit();
 	}
 }
+/////////////////////////////////////////////////////////////////
+function calculaDias($diaX,$diaY){
+	$data1 = new DateTime($diaX);
+	$data2 = new DateTime($diaY);
+
+	$intervalo = $data1->diff($data2); 
+	if($intervalo->y > 1){ 
+	  return $intervalo->y." Anos atrás";
+	}elseif($intervalo->y == 1){
+	  return $intervalo->y." Ano atrás";
+	}elseif($intervalo->m > 1){
+	  return $intervalo->m." Meses atrás";
+	}elseif($intervalo->m == 1){
+	  return $intervalo->m." Mês atrás";
+	}elseif($intervalo->d > 1){
+	  return $intervalo->d." Dias atrás";
+	}elseif($intervalo->d > 0){
+	  return $intervalo->d." Dia atrás";
+	}elseif($intervalo->h > 0){
+	  return $intervalo->h." Horas atrás";
+	}elseif($intervalo->i > 1 && $intervalo->i < 59){
+	  return $intervalo->i." Minutos atrás";
+	}elseif($intervalo->i == 1){
+	  return $intervalo->i." Minuto atrás";
+	}elseif($intervalo->s < 60 && $intervalo->i <= 0){
+	  return $intervalo->s." Segundo atrás";
+	}
+}
 /////////////////////////////////////////////////////
 
 function deletecategoria($categoria)
@@ -475,13 +503,46 @@ function getcountPosts(){
 	}
 	///////////////////////////////////////////////////////////////////////
 	function getcomentarioAdm(){
+		$dataAtual=getdata();
 		$pdo=pdo();
-		$stmt=$pdo->prepare("SELECT *FROM comentarios");
+		$stmt=$pdo->prepare("SELECT *FROM comentarios  ORDER BY id DESC LIMIT 30");
 		$stmt->execute();
 		$total=$stmt->rowCount();
 		if($total>0){
 			while($dados=$stmt->fetch(PDO::FETCH_ASSOC)){
-				
+				echo "<tr>
+				<td>{$dados['id']}</td>
+				<td>{$dados['nome']}</td>
+				<td>".calculaDias($dados['data'], $dataAtual)."</td>
+				<td>
+				  <button  id='btnGroupDrop1' type='button' class='btn btn-secondary dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Gerenciar</button>
+				  <div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>
+					<a class='dropdown-item bg-dark text-light' data-toggle='modal' data-target='#exampleModalCenter{$dados['id']}'>Ver Comentário</a>
+					<a class='dropdown-item bg-success text-light' href='{$dados['id_post']}' target='_blank'>Ver Publicação</a>
+					<a class='dropdown-item bg-danger text-light' href='admin/deletar-comentario/{$dados['id']}'>Deletar Comentário</a>
+				  </div>
+				</td>
+				</tr>";
+				lauchModal($dados['id'], $dados['nome'], $dados['comentario']);
 			}
 		}
+	}
+
+	///////////////////////////////////////////////////////////////////////
+	function lauchModal($id, $nome, $mensagem){
+		echo "<div class='modal fade' id='exampleModalCenter{$id}' tabindex='-1' role='dialog' aria-labelledby='exampleModalCenterTitle' aria-hidden='true'>
+	  <div class='modal-dialog modal-dialog-centered' role='document'>
+	    <div class='modal-content'>
+	      <div class='modal-header'>
+	        <h5 class='modal-title' id='exampleModalCenterTitle'>{$nome} Comentou</h5>
+	        <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+	          <span aria-hidden='true'>&times;</span>
+	        </button>
+	      </div>
+	      <div class='modal-body'>
+	        {$mensagem}
+	      </div>
+    </div>
+  </div>
+</div>";
 	}
