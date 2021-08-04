@@ -19,7 +19,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/97bdcc5c17.js"></script>
 
-    <title></title>
+    <title><?php geraTitulo(BLOG_TITLE);?></title>
   </head>
   <body>
 
@@ -40,7 +40,7 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-8">
-          
+          <?php paginacaoBlog();?>
           </div>
 
         <div class="col-sm-4">
@@ -56,14 +56,14 @@
 
           <div class="menu-right">
             <div class="title">MAIS POPULARES</div>
-            <?php ?>
+            <?php getMostpopularposts(); ?>
           </div>
 
             <div class="menu-right">
               <div class="title">CATEGORIAS</div>
               <div class="content">
                 <ul>
-                  <?php?>	
+                  <?php getCategoriasblog();?>	
                 </ul>
               </div>
             </div>

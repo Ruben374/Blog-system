@@ -12,9 +12,9 @@ proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 <hr>
 <p>
 Telefone: 
-<b><?php echo contato_telefone;?></b><br>
+<b><?php echo "948097837";?></b><br>
 
 Email: 
-<a href="mailto:<?php echo contato_email;?>"><?php echo contato_email;?></a>
+<a href="mailto:<?php echo "rubandre14@gmail.com";?>"><?php echo "rubandre14@gmail.com";?></a>
 </p>
 </div>

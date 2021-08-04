@@ -344,31 +344,32 @@ function getCategoriasMenu()
 	}
 }
 /////////////////////////////////////////////////////////////////
-function calculaDias($diaX,$diaY){
+function calculaDias($diaX, $diaY)
+{
 	$data1 = new DateTime($diaX);
 	$data2 = new DateTime($diaY);
 
-	$intervalo = $data1->diff($data2); 
-	if($intervalo->y > 1){ 
-	  return $intervalo->y." Anos atrás";
-	}elseif($intervalo->y == 1){
-	  return $intervalo->y." Ano atrás";
-	}elseif($intervalo->m > 1){
-	  return $intervalo->m." Meses atrás";
-	}elseif($intervalo->m == 1){
-	  return $intervalo->m." Mês atrás";
-	}elseif($intervalo->d > 1){
-	  return $intervalo->d." Dias atrás";
-	}elseif($intervalo->d > 0){
-	  return $intervalo->d." Dia atrás";
-	}elseif($intervalo->h > 0){
-	  return $intervalo->h." Horas atrás";
-	}elseif($intervalo->i > 1 && $intervalo->i < 59){
-	  return $intervalo->i." Minutos atrás";
-	}elseif($intervalo->i == 1){
-	  return $intervalo->i." Minuto atrás";
-	}elseif($intervalo->s < 60 && $intervalo->i <= 0){
-	  return $intervalo->s." Segundo atrás";
+	$intervalo = $data1->diff($data2);
+	if ($intervalo->y > 1) {
+		return $intervalo->y . " Anos atrás";
+	} elseif ($intervalo->y == 1) {
+		return $intervalo->y . " Ano atrás";
+	} elseif ($intervalo->m > 1) {
+		return $intervalo->m . " Meses atrás";
+	} elseif ($intervalo->m == 1) {
+		return $intervalo->m . " Mês atrás";
+	} elseif ($intervalo->d > 1) {
+		return $intervalo->d . " Dias atrás";
+	} elseif ($intervalo->d > 0) {
+		return $intervalo->d . " Dia atrás";
+	} elseif ($intervalo->h > 0) {
+		return $intervalo->h . " Horas atrás";
+	} elseif ($intervalo->i > 1 && $intervalo->i < 59) {
+		return $intervalo->i . " Minutos atrás";
+	} elseif ($intervalo->i == 1) {
+		return $intervalo->i . " Minuto atrás";
+	} elseif ($intervalo->s < 60 && $intervalo->i <= 0) {
+		return $intervalo->s . " Segundo atrás";
 	}
 }
 /////////////////////////////////////////////////////
@@ -428,7 +429,8 @@ function addAdm()
 	}
 }
 //////////////////////////////////////////////////////////////////
-function listaAdministradores(){
+function listaAdministradores()
+{
 	$pdo = pdo();
 
 	$stmt = $pdo->prepare("SELECT * FROM usuarios ORDER BY Nome ASC");
@@ -436,84 +438,112 @@ function listaAdministradores(){
 
 	$total = $stmt->rowCount();
 
-	if($total > 0){
+	if ($total > 0) {
 		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			echo "<li>{$dados['Nome']} <a href='admin/deletar-administrador/{$dados['ID']}' class='btn btn-danger btn-sm float-right'>Deletar</a></li>";
 		}
 	}
 }
 ////////////////////////////////////////////////////////////////////
-function updateAdmdata(){
+function updateAdmdata()
+{
 	if (isset($_POST["env"]) && $_POST["env"] == "alt") {
 
- if($_POST["senha"]==getadmData("Senha")){
+		if ($_POST["senha"] == getadmData("Senha")) {
 
 
-		
-	$pdo = pdo();
-	$stmt = $pdo->prepare("UPDATE usuarios SET Nome=:Nome,Usuario=:Usuario WHERE Usuario=:Usuario");
-	$success=$stmt->execute([
-		'Nome' => $_POST["nome"],
-		'Usuario' => $_SESSION["admlogin"]
-	]);
 
-	if ($success)
-		alerta("success", "Dados guardados com sucesso");
-	else
-		alerta("danger", "erro ao guardar");
- }
- else{
-	
-	$senha = password_hash($_POST["senha"], PASSWORD_BCRYPT);
-		
-	$pdo = pdo();
-	$stmt = $pdo->prepare("UPDATE usuarios SET Nome=:Nome,Usuario=:Usuario,Senha=:Senha WHERE Usuario=:Usuario");
-	$success=$stmt->execute([
-		'Nome' => $_POST["nome"],
-		'Usuario' => $_SESSION["admlogin"],
-		'Senha' => $senha	
-	]);
-	
-	if ($success){
-		$_SESSION["x"]="Dados guardados com sucesso";
-	  redireciona(0,"admin/me");
-	 
-	}
-	else
-		alerta("danger", "erro ao guardar");
- }
+			$pdo = pdo();
+			$stmt = $pdo->prepare("UPDATE usuarios SET Nome=:Nome,Usuario=:Usuario WHERE Usuario=:Usuario");
+			$success = $stmt->execute([
+				'Nome' => $_POST["nome"],
+				'Usuario' => $_SESSION["admlogin"]
+			]);
 
+			if ($success)
+				alerta("success", "Dados guardados com sucesso");
+			else
+				alerta("danger", "erro ao guardar");
+		} else {
+
+			$senha = password_hash($_POST["senha"], PASSWORD_BCRYPT);
+
+			$pdo = pdo();
+			$stmt = $pdo->prepare("UPDATE usuarios SET Nome=:Nome,Usuario=:Usuario,Senha=:Senha WHERE Usuario=:Usuario");
+			$success = $stmt->execute([
+				'Nome' => $_POST["nome"],
+				'Usuario' => $_SESSION["admlogin"],
+				'Senha' => $senha
+			]);
+
+			if ($success) {
+				$_SESSION["x"] = "Dados guardados com sucesso";
+				redireciona(0, "admin/me");
+			} else
+				alerta("danger", "erro ao guardar");
+		}
 	}
 }
 ////////////////////////////////////////////////////////
-function getcountAdmin(){
-$pdo=pdo();
-$stmt=$pdo->prepare("SELECT COUNT(*) AS quant FROM usuarios");
-$stmt->execute();
-$quant=$stmt->fetch();
-return $quant["quant"];
+function getcountAdmin()
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT COUNT(*) AS quant FROM usuarios");
+	$stmt->execute();
+	$quant = $stmt->fetch();
+	return $quant["quant"];
 }
 //////////////////////////////////////////////////////////////////////
-function getcountPosts(){
-	$pdo=pdo();
-	$stmt=$pdo->prepare("SELECT COUNT(*) AS quant FROM posts");
+function getcountPosts()
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT COUNT(*) AS quant FROM posts");
 	$stmt->execute();
-	$quant=$stmt->fetch();
+	$quant = $stmt->fetch();
 	return $quant["quant"];
-	}
-	///////////////////////////////////////////////////////////////////////
-	function getcomentarioAdm(){
-		$dataAtual=getdata();
-		$pdo=pdo();
-		$stmt=$pdo->prepare("SELECT *FROM comentarios  ORDER BY id DESC LIMIT 30");
-		$stmt->execute();
-		$total=$stmt->rowCount();
-		if($total>0){
-			while($dados=$stmt->fetch(PDO::FETCH_ASSOC)){
-				echo "<tr>
+}
+////////////////////////////////////////////////////////////////////////
+function getcountView()
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT SUM(visualizacoes) AS quant FROM posts");
+	$stmt->execute();
+	$quant = $stmt->fetch();
+	return $quant["quant"];
+}
+////////////////////////////////////////////////////////////////////
+function getcountViewFrompost($id)
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT visualizacoes FROM posts WHERE id=:id");
+	$stmt->execute([':id' => $id]);
+	$dados = $stmt->fetch(PDO::FETCH_ASSOC);
+
+	return $dados['visualizacoes'];
+}
+/////////////////////////////////////////////////////////////////////////
+function getcountComents()
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT COUNT(*) AS quant FROM comentarios");
+	$stmt->execute();
+	$quant = $stmt->fetch();
+	return $quant["quant"];
+}
+///////////////////////////////////////////////////////////////////////
+function getcomentarioAdm()
+{
+	$dataAtual = getdata();
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT *FROM comentarios  ORDER BY id DESC LIMIT 30");
+	$stmt->execute();
+	$total = $stmt->rowCount();
+	if ($total > 0) {
+		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			echo "<tr>
 				<td>{$dados['id']}</td>
 				<td>{$dados['nome']}</td>
-				<td>".calculaDias($dados['data'], $dataAtual)."</td>
+				<td>" . calculaDias($dados['data'], $dataAtual) . "</td>
 				<td>
 				  <button  id='btnGroupDrop1' type='button' class='btn btn-secondary dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Gerenciar</button>
 				  <div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>
@@ -523,14 +553,15 @@ function getcountPosts(){
 				  </div>
 				</td>
 				</tr>";
-				lauchModal($dados['id'], $dados['nome'], $dados['comentario']);
-			}
+			lauchModal($dados['id'], $dados['nome'], $dados['comentario']);
 		}
 	}
+}
 
-	///////////////////////////////////////////////////////////////////////
-	function lauchModal($id, $nome, $mensagem){
-		echo "<div class='modal fade' id='exampleModalCenter{$id}' tabindex='-1' role='dialog' aria-labelledby='exampleModalCenterTitle' aria-hidden='true'>
+///////////////////////////////////////////////////////////////////////
+function lauchModal($id, $nome, $mensagem)
+{
+	echo "<div class='modal fade' id='exampleModalCenter{$id}' tabindex='-1' role='dialog' aria-labelledby='exampleModalCenterTitle' aria-hidden='true'>
 	  <div class='modal-dialog modal-dialog-centered' role='document'>
 	    <div class='modal-content'>
 	      <div class='modal-header'>
@@ -545,4 +576,404 @@ function getcountPosts(){
     </div>
   </div>
 </div>";
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+function paginacaoBlog()
+{
+	$url = (isset($_GET['pagina'])) ? $_GET['pagina'] : 'inicio';
+	$explode = explode('/', $url);
+	$dir = 'pages/php/';
+	$ext = '.php';
+
+	if (file_exists($dir . $explode[0] . $ext)) {
+		include($dir . $explode[0] . $ext);
+	} else {
+		include($dir . "p" . $ext);
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+function getPosts()
+{
+	$pdo = pdo();
+	$data = getData();
+	$url = (isset($_GET['pagina'])) ? $_GET['pagina'] : 'dashboard';
+	$explode = explode('/', $url);
+	$pg = (isset($explode['2'])) ? $explode['2'] : 1;
+	$maximo = 10;
+	$inicio = ($pg - 1) * $maximo;
+
+	$stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC limit $inicio,$maximo");
+	$stmt->execute();
+
+	$total = $stmt->rowCount();
+
+	if ($total > 0) {
+		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+			echo "<div class='content-post'>
+  <div class='title'>
+    <a href='{$dados['subtitulo']}'>{$dados['titulo']}</a> 
+  </div>
+  <div class='content'>
+    <div class='container'>
+      <div class='row'>
+        <div class='col-sm-3'>
+          <img src='{$dados['imagem']}' class='img-fluid'>
+        </div>
+        <div class='col-sm'>
+         " . limitaCaracters(strip_tags($dados['postagem'])) . " 
+        </div>
+      </div>
+  <div class='infos'>
+    <i class='fas fa-user'></i> " . getData_fromUser($dados['id_postador'], "Nome", "id") . " |
+    <i class='fas fa-tag'></i> <a href='categoria/{$dados['categoria']}' class='badge badge-primary'>" . getCategorianome($dados['categoria']) . "</a> |
+    <i class='fas fa-eye'></i> " . $dados['visualizacoes'] . " Visitas |  
+    <i class='fas fa-comment'></i> " . getcoments_Frompost($dados['id']) . " Comentários |
+    <i class='far fa-clock'></i> " . calculaDias($data, $dados['data']) . "
+  </div>
+    </div>
+  </div>
+</div>";
+		}
+	}
+}
+
+function limitaCaracters($texto)
+{
+	if (strlen($texto) <= 365) {
+		return $texto;
+	} else {
+		return mb_substr($texto, 0, 365) . "...";
+	}
+}
+////////////////////////////////////////////////////////////////////////////
+function getData_fromUser($usuario, $var, $where)
+{
+
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT * FROM usuarios WHERE $where = :usuario");
+	$stmt->execute([':usuario' => $usuario]);
+
+	$dados = $stmt->fetch(PDO::FETCH_ASSOC);
+	return $dados[$var];
+}
+///////////////////////////////////////////////////////////////////////////////////////////
+function getComents_FromPost($id_post)
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT COUNT(*) AS quant FROM comentarios WHERE id_post = :id_post");
+	$stmt->execute([':id_post' => $id_post]);
+	$quant = $stmt->fetch();
+	return $quant["quant"];
+}
+/////////////////////////////////////////////////////////////////////////////////////////
+
+function Pageslist()
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT COUNT(*) AS quant FROM posts");
+	$stmt->execute();
+	$quant = $stmt->fetch();
+	$maximo = 10;
+	$links = ceil($quant["quant"] / $maximo);
+	$pg = (isset($explode['2'])) ? $explode['2'] : 1;
+	for ($i = 1; $i < $pg + $links; $i++) {
+		echo "<li class='page-item'><a class='page-link' href='inicio/posts/{$i}'>{$i}</a></li>";
+	}
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+function getMostpopularposts()
+{
+
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT *FROM posts ORDER BY visualizacoes DESC LIMIT 10");
+	$stmt->execute();
+	$total = $stmt->rowCount();
+	if ($total > 0) {
+		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			echo "<div class='content margin-top'>
+	<div class='media'>
+	  <img src='{$dados['imagem']}' class='mr-3'>
+	  <div class='media-body'>
+	    <h5 class='mt-0'><a href='{$dados['subtitulo']}'>{$dados['titulo']}</a></h5>
+	  </div>
+	</div>
+</div>";
+		}
+	}
+}
+////////////////////////////////////////////////////////////////////////////////////////////
+
+function getCategoriasblog()
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT *FROM categorias ORDER BY NOME DESC");
+	$stmt->execute();
+	$total = $stmt->rowCount();
+	if ($total > 0) {
+		while ($dados = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+			echo "<li><a href='categoria/{$dados['ID']}'>{$dados['NOME']} " . getTotalPostsByCategoria($dados['ID']) . "</a></li>";
+		}
+	}
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function getTotalPostsByCategoria($id)
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT COUNT(*) AS quant FROM posts WHERE categoria=:id");
+	$stmt->execute([':id' => $id]);
+	$quant = $stmt->fetch();
+	return $quant["quant"];
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////
+function getPosts_fromCategoria($id)
+{
+	$pdo = pdo();
+	$data = getdata();
+
+	///////////////////////////
+
+	$url = (isset($_GET['pagina'])) ? $_GET['pagina'] : 'dashboard';
+	$explode = explode('/', $url);
+	$pg = (isset($explode['3'])) ? $explode['3'] : 1;
+	$maximo = 10;
+	$inicio = ($pg - 1) * $maximo;
+
+	/////////////////////////
+	$stmt = $pdo->prepare("SELECT *FROM posts WHERE categoria =:id ORDER BY id DESC limit $inicio,$maximo");
+	$stmt->execute([':id' => $id]);
+	$total = $stmt->rowCount();
+
+
+	if ($total > 0) {
+		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			echo "<div class='content-post'>
+		<div class='title'>
+		  <a href='{$dados['subtitulo']}'>{$dados['titulo']}</a> 
+		</div>
+		<div class='content'>
+		  <div class='container'>
+			<div class='row'>
+			  <div class='col-sm-3'>
+				<img src='{$dados['imagem']}' class='img-fluid'>
+			  </div>
+			  <div class='col-sm'>
+			   " . limitaCaracters(strip_tags($dados['postagem'])) . " 
+			  </div>
+			</div>
+		<div class='infos'>
+		  <i class='fas fa-user'></i> " . getData_fromUser($dados['id_postador'], "Nome", "id") . " |
+		  <i class='fas fa-tag'></i> <a href='categoria/{$dados['categoria']}' class='badge badge-primary'>" . getCategorianome($dados['categoria']) . "</a> |
+		  <i class='fas fa-eye'></i> " . $dados['visualizacoes'] . " Visitas |  
+		  <i class='fas fa-comment'></i> " . getcomentarioFrompost($dados['id']) . " Comentários |
+		  <i class='far fa-clock'></i> " . calculaDias($data, $dados['data']) . "
+		</div>
+		  </div>
+		</div>
+	  </div>";
+		}
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+function getcomentarioFrompost($id)
+{
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT COUNT(*) as quant FROM comentarios WHERE id_post=:id");
+	$stmt->execute([':id' => $id]);
+	$quant = $stmt->fetch();
+	return $quant["quant"];
+}
+////////////////////////////////////////////////////////////////////////////
+function pageslistFromCategoria($categoria)
+{
+	$pdo = pdo();
+
+	$stmt = $pdo->prepare("SELECT * FROM posts WHERE categoria = :categoria");
+	$stmt->execute([':categoria' => $categoria]);
+	$total = $stmt->rowCount();
+
+	$maximo = 10;
+	$links = ceil($total / $maximo);
+	$pg = (isset($explode['2'])) ? $explode['2'] : 1;
+
+	for ($i = 1; $i < $pg + $links; $i++) {
+		echo "<li class='page-item'><a class='page-link' href='categoria/{$categoria}/posts/{$i}'>{$i}</a></li>";
+	}
+}
+////////////////////////////////////////////////////////////////////////
+function getPostsFromBusca()
+{
+	$pdo = pdo();
+	$data = getData();
+
+	if (isset($_POST['busca'])) {
+		$busca = "%{$_POST['busca']}%";
+	} else {
+		$busca = "";
+	}
+
+
+	$stmt = $pdo->prepare("SELECT * FROM posts WHERE titulo LIKE :titulo OR postagem LIKE :postagem ORDER BY id DESC ");
+	$stmt->execute([':titulo' => $busca, ':postagem' => $busca]);
+
+	$total = $stmt->rowCount();
+
+	if ($total > 0) {
+		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+			echo "<div class='content-post'>
+<div class='title'>
+<a href='{$dados['subtitulo']}'>{$dados['titulo']}</a> 
+</div>
+<div class='content'>
+<div class='container'>
+  <div class='row'>
+	<div class='col-sm-3'>
+	  <img src='{$dados['imagem']}' class='img-fluid'>
+	</div>
+	<div class='col-sm'>
+	 " . limitaCaracters(strip_tags($dados['postagem'])) . " 
+	</div>
+  </div>
+<div class='infos'>
+<i class='fas fa-user'></i> " . getData_fromUser($dados['id_postador'], "Nome", "id") . " |
+<i class='fas fa-tag'></i> <a href='categoria/{$dados['categoria']}' class='badge badge-primary'>" . getCategorianome($dados['categoria']) . "</a> |
+<i class='fas fa-eye'></i> " . $dados['visualizacoes'] . " Visitas |  
+<i class='fas fa-comment'></i> " . getComentarioFrompost($dados['id']) . " Comentários |
+<i class='far fa-clock'></i> " . calculaDias($data, $dados['data']) . " 
+</div>
+</div>
+</div>
+</div>";
+		}
+	}
+}
+////////////////////////////////////////////////////////
+function getcompletePost()
+{
+	$url = (isset($_GET['pagina'])) ? $_GET['pagina'] : 'inicio';
+	$explode = explode('/', $url);
+
+	$pdo = pdo();
+	$stmt = $pdo->prepare("SELECT *FROM posts WHERE subtitulo=:subtitulo");
+	$stmt->execute(['subtitulo' => $explode[0]]);
+	$total = $stmt->rowCount();
+	if ($total <= 0) {
+		include("pages/php/404.php");
+		exit();
+	} else {
+		return $stmt->fetch(PDO::FETCH_ASSOC);
+	}
+}
+///////////////////////////////////////////////////////////////////////
+
+function sendComent($id_post, $subtitulo)
+{
+	if (isset($_POST['env']) && $_POST['env'] == "comentario") {
+		$pdo = pdo();
+		$data = getData();
+
+		$stmt = $pdo->prepare("INSERT INTO comentarios (id_post, nome, comentario, data) VALUES (:id_post, :nome, :comentario, :data)");
+		$stmt->execute([
+			':id_post' => $id_post,
+			':nome' => $_POST['nome'],
+			':comentario' => $_POST['comentario'],
+			':data' => $data
+		]);
+		$total = $stmt->rowCount();
+
+		if ($total > 0) {
+			alerta("success", "Comentário enviado com sucesso!");
+			redireciona(3, $subtitulo . "#comentarios");
+		} else {
+			alerta("danger", "Erro ao enviar o comentário");
+		}
+	}
+}
+///////////////////////////////////////////////////////////////////
+function getComentPost($id_post)
+{
+	$pdo = pdo();
+	$data = getData();
+
+	$stmt = $pdo->prepare("SELECT * FROM comentarios WHERE id_post = :id_post ORDER BY id DESC");
+	$stmt->execute([':id_post' => $id_post]);
+	$stmt->execute();
+
+	$total = $stmt->rowCount();
+
+	if ($total > 0) {
+		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			echo "<div class='container'>
+<div class='row'>
+<div class='col-sm-2'>
+  <img src='images/template/nophoto.png' class='img-fluid'>
+</div>
+<div class='col-sm'>
+  <div class='card'>
+	<div class='card-header'>
+	  <b>{$dados['nome']}</b> Comentou 
+	  <span class='float-right small'>" . calculaDias($data, $dados['data']) . "</span>
+	</div>
+	<div class='card-body'>
+	  {$dados['comentario']}
+	</div>
+  </div>
+</div>
+</div>
+</div><br>";
+		}
+	}
+}
+///////////////////////////////////////////////////////////////////
+function geraTitulo($titulo)
+{
+	$url = (isset($_GET['pagina'])) ? $_GET['pagina'] : 'inicio';
+	$explode = explode('/', $url);
+
+	switch ($explode['0']) {
+		case 'inicio':
+			echo $titulo . " | Inicio";
+			break;
+
+		case 'sobre':
+			echo $titulo . " | Sobre";
+			break;
+
+		case 'contato':
+			echo $titulo . " | Contato";
+			break;
+
+		case 'categoria':
+			echo "Buscando na categoria: " . strtoupper(getCategorianome($explode['1']));
+			break;
+
+		case 'busca':
+			echo "Buscando por: " . strtoupper($_POST['busca']);
+			break;
+
+		case '404':
+			echo "ERROR 404";
+			break;
+
+		default:
+			$dados = getCompletePost($explode[0]);
+			echo $dados['titulo'];
+			break;
+	}
+}
+
+////////////////////////////////////////////////////////////////////
+function countViews($id_post)
+{
+	$nVisitas =  getcountViewFrompost($id_post) + 1;
+
+	$pdo = pdo();
+
+	$stmt = $pdo->prepare("UPDATE posts SET visualizacoes = :visualizacoes WHERE id = :id");
+	$stmt->execute([':visualizacoes' => $nVisitas, ':id' => $id_post]);
+}

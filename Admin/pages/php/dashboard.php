@@ -13,12 +13,12 @@ Aqui algumas estatísticas do blog
     </div>
 
     <div class="col-sm-3" align="center">
-      <h2 class="number">34</h2>
+      <h2 class="number"><?php echo getcountComents() ?></h2>
       <small>Comentários</small>
     </div>
 
     <div class="col-sm-3" align="center">
-      <h2 class="number">34</h2>
+      <h2 class="number"><?php echo getcountView() ?></h2>
       <small>Visualizações</small>
     </div>
 

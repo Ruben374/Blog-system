@@ -1,7 +1,7 @@
 <?php 
   $dados = getCompletePost(); 
   $data = getData(); 
-  atualizaVisitas($dados['id']);
+  countViews($dados['id']);
 ?>
 <div class="content-post">
             <div class="title">
@@ -12,10 +12,10 @@
               <?php echo $dados['postagem'];?>
             </div>
             <div class="infos">
-              <i class="fas fa-user"></i> <?php echo getDadosUserSite($dados['id_postador'], "nome"); ?> |
-              <i class="fas fa-tag"></i> <a href="categoria/<?php echo $dados['categoria'];?>" class="badge badge-primary"><?php echo getNomeCategoria($dados['categoria']); ?></a> |
+              <i class="fas fa-user"></i> <?php echo getData_fromUser($dados['id_postador'], "Nome","id"); ?> |
+              <i class="fas fa-tag"></i> <a href="categoria/<?php echo $dados['categoria'];?>" class="badge badge-primary"><?php echo getCategorianome($dados['categoria']); ?></a> |
               <i class="fas fa-eye"></i> <?php echo $dados['visualizacoes'];?> Visitas |  
-              <i class="fas fa-comment"></i> <?php echo contador_ComentariosFromPost($dados['id']);?> Comentários |
+              <i class="fas fa-comment"></i> <?php echo getComents_FromPost($dados['id']);?> Comentários |
               <i class='far fa-clock'></i> <?php echo calculaDias($data, $dados['data']);?>
             </div>
           </div>         
@@ -37,13 +37,13 @@
               <input type="hidden" name="env" value="comentario">
             </p>
           </form>
-          <?php enviarComentario($dados['id'], $dados['subtitulo']);?>
+          <?php sendComent($dados['id'], $dados['subtitulo']);?>
         </div>
         </a>
         <hr>
 
         <a name="comentarios">
         <div class="comentarios">
-          <?php pegaComentariosPost($dados['id']);?>
+          <?php getComentPost($dados['id']);?>
         </div>
       </a>
