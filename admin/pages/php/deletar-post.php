@@ -1,0 +1,1 @@
+<?php deletaFoto(getDadosPost($explode[1],"imagem")); delete("posts", "id", $explode['1'], "admin/gerenciar-post/");?>
