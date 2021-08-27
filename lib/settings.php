@@ -1,7 +1,7 @@
 <?php
 		#Dados do site
 		const BLOG_TITLE = "blog";
-		const URL = "http://localhost/My-blog/";
+		const URL = "http://localhost/blg/";
 		#database dice
 		const DB_HOST = "localhost";
 		const DB_USER = "root";

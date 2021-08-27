@@ -1,0 +1,1 @@
+<?php delete("comentarios", "id", $explode['1'], "admin/gerenciar-comentarios");?>
