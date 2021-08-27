@@ -29,7 +29,7 @@
                       <h2>Send us a message</h2>
                     </div>
                     <div class="content">
-                      <form id="contact" action="" method="post">
+                      <form id="contact" action="action" method="post">
                         <div class="row">
                           <div class="col-md-6 col-sm-12">
                             <fieldset>
@@ -53,7 +53,8 @@
                           </div>
                           <div class="col-lg-12">
                             <fieldset>
-                              <button type="submit" id="form-submit" class="main-button">Send Message</button>
+                              <button type="submit" id="form-submit" class="main-button" name="submit">Send Message</button>
+                            
                             </fieldset>
                           </div>
                         </div>
