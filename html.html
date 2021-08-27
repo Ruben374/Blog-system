@@ -1,0 +1,35 @@
+<div class='col-lg-12'>
+    <div class='blog-post'>
+      <div class='blog-thumb'>
+        <img src='{$dados['imagem']}' alt=''>
+      </div>
+      <div class='down-content'>
+        <span>Fashion</span>
+        <a href='post-details.html'><h4>{$dados['titulo']}</h4></a>
+        <ul class='post-info'>
+          <li><a href='#'>".getData_fromUser($dados['id_postador'], "Nome", "id")."</a></li>
+          <li><a href='#'>".calculaDias($data, $dados['data'])."</a></li>
+          <li><a href='#'>".getcoments_Frompost($dados['id']) ." Comments</a></li>
+        </ul>
+        <p>  " . limitaCaracters(strip_tags($dados['postagem'])) . "  </p>
+        <div class='post-options'>
+          <div class='row'>
+            <div class='col-6'>
+              <ul class='post-tags'>
+                <li><i class='fa fa-tags'></i></li>
+                <li><a href='#'>HTML CSS</a>,</li>
+                <li><a href='#'>Photoshop</a></li>
+              </ul>
+            </div>
+            <div class='col-6'>
+              <ul class='post-share'>
+                <li><i class='fa fa-share-alt'></i></li>
+                <li><a href='#'>Facebook</a>,</li>
+                <li><a href='#'>Twitter</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>

@@ -599,9 +599,12 @@ function getPosts()
 {
 	$pdo = pdo();
 	$data = getData();
-	$url = (isset($_GET['pagina'])) ? $_GET['pagina'] : 'dashboard';
+	$url = (isset($_GET['pagina'])) ? $_GET['pagina'] : 'inicio';
 	$explode = explode('/', $url);
 	$pg = (isset($explode['2'])) ? $explode['2'] : 1;
+	if(!is_numeric($pg)){
+$pg=1;
+	}
 	$maximo = 10;
 	$inicio = ($pg - 1) * $maximo;
 
@@ -613,29 +616,39 @@ function getPosts()
 	if ($total > 0) {
 		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
-			echo "<div class='content-post'>
-  <div class='title'>
-    <a href='{$dados['subtitulo']}'>{$dados['titulo']}</a> 
+echo"<div class='col-lg-12'>
+<div class='blog-post'>
+  <div class='blog-thumb'>
+	<img src='{$dados['imagem']}' alt=''>
   </div>
-  <div class='content'>
-    <div class='container'>
-      <div class='row'>
-        <div class='col-sm-3'>
-          <img src='{$dados['imagem']}' class='img-fluid'>
-        </div>
-        <div class='col-sm'>
-         " . limitaCaracters(strip_tags($dados['postagem'])) . " 
-        </div>
-      </div>
-  <div class='infos'>
-    <i class='fas fa-user'></i> " . getData_fromUser($dados['id_postador'], "Nome", "id") . " |
-    <i class='fas fa-tag'></i> <a href='categoria/{$dados['categoria']}' class='badge badge-primary'>" . getCategorianome($dados['categoria']) . "</a> |
-    <i class='fas fa-eye'></i> " . $dados['visualizacoes'] . " Visitas |  
-    <i class='fas fa-comment'></i> " . getcoments_Frompost($dados['id']) . " Comentários |
-    <i class='far fa-clock'></i> " . calculaDias($data, $dados['data']) . "
+  <div class='down-content'>
+	<span>Fashion</span>
+	<a href='{$dados['subtitulo']}'><h4>{$dados['titulo']}</h4></a>
+	<ul class='post-info'>
+	  <li><a href='#'>".getData_fromUser($dados['id_postador'], "Nome", "id")."</a></li>
+	  <li><a href='#'>".calculaDias($data, $dados['data'])."</a></li>
+	  <li><a href='#'>".getcoments_Frompost($dados['id']) ." Comments</a></li>
+	</ul>
+	<p>  " . limitaCaracters(strip_tags($dados['postagem'])) . "  </p>
+	<div class='post-options'>
+	  <div class='row'>
+		<div class='col-6'>
+		  <ul class='post-tags'>
+			<li><i class='fa fa-tags'></i></li>
+			<li><a href='#'>" . getCategorianome($dados['categoria']) . "</a></li>
+		  </ul>
+		</div>
+		<div class='col-6'>
+		  <ul class='post-share'>
+			<li><i class='fa fa-share-alt'></i></li>
+			<li><a href='#'>Facebook</a>,</li>
+			<li><a href='#'>Twitter</a></li>
+		  </ul>
+		</div>
+	  </div>
+	</div>
   </div>
-    </div>
-  </div>
+</div>
 </div>";
 		}
 	}
@@ -678,11 +691,16 @@ function Pageslist()
 	$stmt->execute();
 	$quant = $stmt->fetch();
 	$maximo = 10;
+	$n=0;
 	$links = ceil($quant["quant"] / $maximo);
 	$pg = (isset($explode['2'])) ? $explode['2'] : 1;
 	for ($i = 1; $i < $pg + $links; $i++) {
-		echo "<li class='page-item'><a class='page-link' href='inicio/posts/{$i}'>{$i}</a></li>";
+	
+		
+		echo" <li class='active'><a href='inicio/posts/{$i}'>{$i}</a></li>";
+	
 	}
+
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -695,14 +713,13 @@ function getMostpopularposts()
 	$total = $stmt->rowCount();
 	if ($total > 0) {
 		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
-			echo "<div class='content margin-top'>
-	<div class='media'>
-	  <img src='{$dados['imagem']}' class='mr-3'>
-	  <div class='media-body'>
-	    <h5 class='mt-0'><a href='{$dados['subtitulo']}'>{$dados['titulo']}</a></h5>
-	  </div>
-	</div>
-</div>";
+			$t=$dados['data'];
+			$t=date('d/m/y',strtotime($t));
+echo"
+<li><a href='{$dados['subtitulo']}'>
+  <h5>{$dados['titulo']}</h5>
+  <span>{$t}</span>
+</a></li>";
 		}
 	}
 }
@@ -716,7 +733,8 @@ function getCategoriasblog()
 	$total = $stmt->rowCount();
 	if ($total > 0) {
 		while ($dados = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-			echo "<li><a href='categoria/{$dados['ID']}'>{$dados['NOME']} " . getTotalPostsByCategoria($dados['ID']) . "</a></li>";
+			echo "<li><a href='categoria/{$dados['ID']}'>- {$dados['NOME']}</a></li>";
+		
 		}
 	}
 }
@@ -824,31 +842,40 @@ function getPostsFromBusca()
 
 	if ($total > 0) {
 		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
-
-			echo "<div class='content-post'>
-<div class='title'>
-<a href='{$dados['subtitulo']}'>{$dados['titulo']}</a> 
-</div>
-<div class='content'>
-<div class='container'>
-  <div class='row'>
-	<div class='col-sm-3'>
-	  <img src='{$dados['imagem']}' class='img-fluid'>
-	</div>
-	<div class='col-sm'>
-	 " . limitaCaracters(strip_tags($dados['postagem'])) . " 
-	</div>
-  </div>
-<div class='infos'>
-<i class='fas fa-user'></i> " . getData_fromUser($dados['id_postador'], "Nome", "id") . " |
-<i class='fas fa-tag'></i> <a href='categoria/{$dados['categoria']}' class='badge badge-primary'>" . getCategorianome($dados['categoria']) . "</a> |
-<i class='fas fa-eye'></i> " . $dados['visualizacoes'] . " Visitas |  
-<i class='fas fa-comment'></i> " . getComentarioFrompost($dados['id']) . " Comentários |
-<i class='far fa-clock'></i> " . calculaDias($data, $dados['data']) . " 
-</div>
-</div>
-</div>
-</div>";
+			echo"<div class='col-lg-12'>
+			<div class='blog-post'>
+			  <div class='blog-thumb'>
+				<img src='{$dados['imagem']}' alt=''>
+			  </div>
+			  <div class='down-content'>
+				<span>Fashion</span>
+				<a href='{$dados['subtitulo']}'><h4>{$dados['titulo']}</h4></a>
+				<ul class='post-info'>
+				  <li><a href='#'>".getData_fromUser($dados['id_postador'], "Nome", "id")."</a></li>
+				  <li><a href='#'>".calculaDias($data, $dados['data'])."</a></li>
+				  <li><a href='#'>".getcoments_Frompost($dados['id']) ." Comments</a></li>
+				</ul>
+				<p>  " . limitaCaracters(strip_tags($dados['postagem'])) . "  </p>
+				<div class='post-options'>
+				  <div class='row'>
+					<div class='col-6'>
+					  <ul class='post-tags'>
+						<li><i class='fa fa-tags'></i></li>
+						<li><a href='#'>" . getCategorianome($dados['categoria']) . "</a></li>
+					  </ul>
+					</div>
+					<div class='col-6'>
+					  <ul class='post-share'>
+						<li><i class='fa fa-share-alt'></i></li>
+						<li><a href='#'>Facebook</a>,</li>
+						<li><a href='#'>Twitter</a></li>
+					  </ul>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			</div>
+			</div>";
 		}
 	}
 }
@@ -888,7 +915,7 @@ function sendComent($id_post, $subtitulo)
 
 		if ($total > 0) {
 			alerta("success", "Comentário enviado com sucesso!");
-			redireciona(3, $subtitulo . "#comentarios");
+			redireciona(0, $subtitulo . "#comentarios");
 		} else {
 			alerta("danger", "Erro ao enviar o comentário");
 		}
@@ -908,24 +935,16 @@ function getComentPost($id_post)
 
 	if ($total > 0) {
 		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
-			echo "<div class='container'>
-<div class='row'>
-<div class='col-sm-2'>
+		
+echo" <li style='min-width: 500px;'>
+<div class='author-thumb'>
   <img src='images/template/nophoto.png' class='img-fluid'>
 </div>
-<div class='col-sm'>
-  <div class='card'>
-	<div class='card-header'>
-	  <b>{$dados['nome']}</b> Comentou 
-	  <span class='float-right small'>" . calculaDias($data, $dados['data']) . "</span>
-	</div>
-	<div class='card-body'>
-	  {$dados['comentario']}
-	</div>
-  </div>
+<div class='right-content'>
+  <h4>{$dados['nome']}<span>" . calculaDias($data, $dados['data']) . "</span></h4>
+  <p> {$dados['comentario']}</p>
 </div>
-</div>
-</div><br>";
+</li>";
 		}
 	}
 }
@@ -976,4 +995,42 @@ function countViews($id_post)
 
 	$stmt = $pdo->prepare("UPDATE posts SET visualizacoes = :visualizacoes WHERE id = :id");
 	$stmt->execute([':visualizacoes' => $nVisitas, ':id' => $id_post]);
+}
+
+
+function teste()
+{
+	$pdo = pdo();
+	$data = getData();
+
+
+
+
+	$stmt = $pdo->prepare("SELECT * FROM posts  ORDER BY id DESC limit 8");
+	$stmt->execute();
+
+	$total = $stmt->rowCount();
+
+	if ($total > 0) {
+		while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+
+echo" <div class='item'>
+<img src='{$dados['imagem']}' alt='' height='370px'>
+<div class='item-content'>
+  <div class='main-content'>
+	<div class='meta-category'>
+	  <span>" . getCategorianome($dados['categoria']) . "</span>
+	</div>
+	<a href='post-details.html'><h4>". $dados['titulo']."</h4></a>
+	<ul class='post-info'>
+	  <li><a href='#'>" . getData_fromUser($dados['id_postador'], "Nome", "id") . "</a></li>
+	  <li><a href='#'>".$dados['data']."</a></li>
+	  <li><a href='#'>" . getComentarioFrompost($dados['id']) . " Comentários</a></li>
+	</ul>
+  </div>
+</div>
+</div> ";
+		}
+	}
 }
