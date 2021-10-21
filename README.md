@@ -1,2 +1,7 @@
-# My blog
+# Blog system with php
+
+>Status:
+developing ⌚
+
+
  
